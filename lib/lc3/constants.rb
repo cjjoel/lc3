@@ -22,5 +22,6 @@ module LC3
 
   module OPCODES
     ADD = 1
+    LDI = 10
   end
 end

@@ -25,7 +25,7 @@ class TestLC3 < Minitest::Test
     assert_equal bytecode, memory[LC3::DEFAULT_PC_ADDRESS..]
   end
 
-  def test_should_add_one_to_register_r0
+  def test_should_add_number_to_register
     # ADD R3, R0, 1
     bytecode = [0x1621, 0x0000]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -33,7 +33,7 @@ class TestLC3 < Minitest::Test
     assert_equal 1, registers[R3]
   end
 
-  def test_should_add_register0_and_register1
+  def test_should_add_registers
     # ADD R3, R0, R1
     bytecode = [0x1601, 0x0000]
     vm = LC3::VM.new
@@ -41,5 +41,13 @@ class TestLC3 < Minitest::Test
     vm.load_bytecode(bytecode).execute
 
     assert_equal 2, vm.registers[R3]
+  end
+
+  def test_should_indirectly_load_value_to_register
+    # LDI R0, 3
+    bytecode = [0xA003, 0, 0, 0, 0x3006, 0, 0xFFFF]
+    registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
+
+    assert_equal 0xFFFF, registers[R0]
   end
 end
