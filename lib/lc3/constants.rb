@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module LC3
+  DEFAULT_PC_ADDRESS = 0x3000
+  POSISTIVE_FLAG = 1 << 0
+  ZERO_FLAG = 1 << 1
+  NEGATIVE_FLAG = 1 << 2
+
   module REGISTERS
     R0 = 0
     R1 = 1
@@ -15,5 +20,7 @@ module LC3
     COUNT = 10
   end
 
-  DEFAULT_PC_ADDRESS = 0x3000
+  module OPCODES
+    ADD = 1
+  end
 end

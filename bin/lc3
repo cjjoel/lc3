@@ -4,5 +4,5 @@
 require "bundler/setup"
 require "lc3"
 
-bytecode = [0x1621]
+bytecode = [0x1621, 0x0000]
 LC3::VM.new.load_bytecode(bytecode).execute
