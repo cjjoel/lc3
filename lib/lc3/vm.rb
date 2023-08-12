@@ -36,6 +36,10 @@ module LC3
           update_flags(registers[destination_register])
         when AND
           process_arithmetic_operation(instruction, :&)
+        when BR
+          condition = registers[COND].anybits?(instruction[9..11])
+          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          registers[PC] += pc_offset if condition
         else
           @running = false
         end

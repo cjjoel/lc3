@@ -21,6 +21,7 @@ module LC3
   end
 
   module OPCODES
+    BR = 0
     ADD = 1
     AND = 5
     LDI = 10
