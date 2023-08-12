@@ -25,7 +25,7 @@ class TestLC3 < Minitest::Test
     assert_equal bytecode, memory[LC3::DEFAULT_PC_ADDRESS..]
   end
 
-  def test_should_add_number_to_register
+  def test_should_add_register_and_number
     # ADD R3, R0, 1
     bytecode = [0x1621, 0x0000]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -49,5 +49,24 @@ class TestLC3 < Minitest::Test
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
 
     assert_equal 0xFFFF, registers[R0]
+  end
+
+  def test_should_perform_bitwise_and_on_register_and_number
+    # AND R3, R0, 0x0F
+    bytecode = [0x562F , 0x0000]
+    vm = LC3::VM.new
+    vm.registers[R0] = 0xFFFF
+    vm.load_bytecode(bytecode).execute
+    assert_equal 0xF, vm.registers[R3]
+  end
+
+  def test_should_perform_bitwise_and_on_registers
+    # AND R3, R0, R1
+    bytecode = [0x5601 , 0x0000]
+    vm = LC3::VM.new
+    vm.registers[R0] = 0xFFFF
+    vm.registers[R1] = 0xF0F0
+    vm.load_bytecode(bytecode).execute
+    assert_equal 0xF0F0, vm.registers[R3]
   end
 end

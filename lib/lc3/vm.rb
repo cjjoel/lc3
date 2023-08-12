@@ -28,22 +28,14 @@ module LC3
         registers[PC] += 1
         case opcode
         when ADD
-          destination_register = instruction[9..11]
-          source_register1 = instruction[6..8]
-          is_immediate_mode = instruction[5] == 1
-          if is_immediate_mode
-            number = sign_extend(instruction & 0x1F)
-            registers[destination_register] = registers[source_register1] + number
-          else
-            source_register2 = instruction[0..2]
-            registers[destination_register] = registers[source_register1] + registers[source_register2]
-          end
-          update_flags(registers[destination_register])
+          process_arithmetic_operation(instruction, :+)
         when LDI
           destination_register = instruction[9..11]
           pc_offset = sign_extend(instruction[0..8] & 0x1FF)
           registers[destination_register] = memory[memory[registers[PC] + pc_offset]]
           update_flags(registers[destination_register])
+        when AND
+          process_arithmetic_operation(instruction, :&)
         else
           @running = false
         end
@@ -52,6 +44,21 @@ module LC3
     end
 
     private
+
+    def process_arithmetic_operation(instruction, operator)
+      destination_register = instruction[9..11]
+      source_register1 = instruction[6..8]
+      is_immediate_mode = instruction[5] == 1
+      if is_immediate_mode
+        number = sign_extend(instruction & 0x1F)
+        registers[destination_register] = registers[source_register1].method(operator).call(number)
+      else
+        source_register2 = instruction[0..2]
+        registers[destination_register] =
+          registers[source_register1].method(operator).call(registers[source_register2])
+      end
+      update_flags(registers[destination_register])
+    end
 
     def sign_extend(number, sign_bit = 4)
       number[sign_bit] == 1 ? number | (0xFFFF << sign_bit) : number
