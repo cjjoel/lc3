@@ -40,6 +40,9 @@ module LC3
           condition = registers[COND].anybits?(instruction[9..11])
           pc_offset = sign_extend(instruction[0..8] & 0x1FF)
           registers[PC] += pc_offset if condition
+        when JMP
+          address = registers[instruction[6..8]]
+          registers[PC] = address
         else
           @running = false
         end

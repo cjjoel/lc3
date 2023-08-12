@@ -104,4 +104,15 @@ class TestLC3 < Minitest::Test
 
     refute_equal 1, vm.registers[R0]
   end
+
+  def test_should_jump_to_address
+    # JMP 7
+    # ADD R0, R0, 1
+    bytecode = [0b1100000111000000, 0x1021, 0xFFFF, 0xFFFF]
+    vm = LC3::VM.new
+    vm.registers[R7] = 0x3003
+    vm.load_bytecode(bytecode).execute
+
+    refute_equal 1, vm.registers[R0]
+  end
 end

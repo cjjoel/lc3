@@ -25,5 +25,6 @@ module LC3
     ADD = 1
     AND = 5
     LDI = 10
+    JMP = 12
   end
 end
