@@ -28,6 +28,7 @@ module LC3
     JSR = 4
     AND = 5
     LDR = 6
+    STR = 7
     NOT = 9
     LDI = 10
     STI = 11

@@ -81,6 +81,11 @@ module LC3
           source_register = instruction[9..11]
           pc_offset = sign_extend(instruction[0..8] & 0x1FF)
           memory[memory[registers[PC] + pc_offset]] = registers[source_register]
+        when STR
+          source_register = instruction[9..11]
+          base_register = instruction[6..8]
+          pc_offset = sign_extend(instruction[0..5] & 0x11F)
+          memory[registers[base_register] + pc_offset] = registers[source_register]
         else
           @running = false
         end

@@ -195,6 +195,17 @@ class TestLC3 < Minitest::Test
     vm.registers[R0] = 0x1111
     vm.load_bytecode(bytecode).execute
 
-    assert_equal 0x1111, vm.memory[0x3004]
+    assert_equal vm.registers[R0], vm.memory[0x3004]
+  end
+
+  def test_should_load_source_register_to_memory_at_combined_value_of_base_register_and_offset
+    # STR R4, R2, #1
+    bytecode = [0x7881, 0xFFFF]
+    vm = LC3::VM.new
+    vm.registers[R2] = 0x3001
+    vm.registers[R4] = 0x1111
+    vm.load_bytecode(bytecode).execute
+
+    assert_equal vm.registers[R4], vm.memory[0x3002]
   end
 end
