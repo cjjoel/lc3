@@ -23,8 +23,10 @@ module LC3
   module OPCODES
     BR = 0
     ADD = 1
+    LD = 2
     JSR = 4
     AND = 5
+    LDR = 6
     LDI = 10
     JMP = 12
   end

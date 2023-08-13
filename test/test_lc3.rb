@@ -137,4 +137,13 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3001, registers[R7]
     refute_equal 1, registers[R0]
   end
+
+  def test_should_load_value_from_memory_with_offset
+    # LD RO 2
+    bytecode = [0x2002, 0xFFFF, 0xFFFF, 0xFFF9]
+    registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
+
+    assert_equal 0xFFF9, registers[R0]
+    assert_equal LC3::NEGATIVE_FLAG, registers[COND]
+  end
 end

@@ -52,6 +52,13 @@ module LC3
             pc_offset = sign_extend(instruction[0..11] & 0x7FF)
             registers[PC] += pc_offset
           end
+        when LD
+          destination_register = instruction[9..11]
+          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          registers[destination_register] = memory[registers[PC] + pc_offset]
+          update_flags(registers[destination_register])
+        when LDR
+
         else
           @running = false
         end
@@ -83,7 +90,7 @@ module LC3
     def update_flags(register_value)
       registers[COND] = if register_value.zero?
                           ZERO_FLAG
-                        elsif register_value[16] == 1
+                        elsif register_value[15] == 1
                           NEGATIVE_FLAG
                         else
                           POSISTIVE_FLAG
