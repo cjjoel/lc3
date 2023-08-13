@@ -43,6 +43,15 @@ module LC3
         when JMP
           address = registers[instruction[6..8]]
           registers[PC] = address
+        when JSR
+          registers[R7] = registers[PC]
+          if (instruction[11]).zero?
+            base_register = registers[instruction[6..8]]
+            registers[PC] = base_register
+          else
+            pc_offset = sign_extend(instruction[0..11] & 0x7FF)
+            registers[PC] += pc_offset
+          end
         else
           @running = false
         end

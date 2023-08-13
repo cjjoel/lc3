@@ -108,11 +108,33 @@ class TestLC3 < Minitest::Test
   def test_should_jump_to_address
     # JMP 7
     # ADD R0, R0, 1
-    bytecode = [0b1100000111000000, 0x1021, 0xFFFF, 0xFFFF]
+    bytecode = [0xC1C0, 0x1021, 0xFFFF, 0xFFFF]
     vm = LC3::VM.new
     vm.registers[R7] = 0x3003
     vm.load_bytecode(bytecode).execute
 
     refute_equal 1, vm.registers[R0]
+  end
+
+  def test_should_jump_to_subroutine_address_stored_in_register
+    # JSR 1
+    # ADD R0, R0, 1
+    bytecode = [0x4040, 0x1021, 0xFFFF, 0xFFFF]
+    vm = LC3::VM.new
+    vm.registers[R1] = 0x3003
+    vm.load_bytecode(bytecode).execute
+
+    assert_equal 0x3001, vm.registers[R7]
+    refute_equal 1, vm.registers[R0]
+  end
+
+  def test_should_jump_to_subroutine_address_stored_in_memory
+    # JSR 2
+    # ADD R0, R0, 1
+    bytecode = [0x4802, 0x1021, 0xFFFF, 0xFFFF]
+    registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
+
+    assert_equal 0x3001, registers[R7]
+    refute_equal 1, registers[R0]
   end
 end
