@@ -24,6 +24,7 @@ module LC3
     BR = 0
     ADD = 1
     LD = 2
+    ST = 3
     JSR = 4
     AND = 5
     LDR = 6

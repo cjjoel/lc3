@@ -169,12 +169,22 @@ class TestLC3 < Minitest::Test
 
   def test_should_perform_bitwise_not_on_register
     # NOT R0, R0
-    bytecode = [0b1001000000111111, 0xFFFF]
+    bytecode = [0x903F, 0xFFFF]
     vm = LC3::VM.new
     vm.registers[R0] = 0x0002
     vm.load_bytecode(bytecode).execute
 
     assert_equal 0xFFFD, vm.registers[R0]
     assert_equal LC3::NEGATIVE_FLAG, vm.registers[COND]
+  end
+
+  def test_should_store_value_to_memory
+    # ST R0, 2
+    bytecode = [0x3002, 0xFFFF]
+    vm = LC3::VM.new
+    vm.registers[R0] = 0x1111
+    vm.load_bytecode(bytecode).execute
+
+    assert_equal vm.registers[R0], vm.memory[0x3003]
   end
 end
