@@ -58,7 +58,11 @@ module LC3
           registers[destination_register] = memory[registers[PC] + pc_offset]
           update_flags(registers[destination_register])
         when LDR
-
+          destination_register = instruction[9..11]
+          base_register = registers[instruction[6..8]]
+          pc_offset = sign_extend(instruction[0..5] & 0x11F)
+          registers[destination_register] = memory[base_register + pc_offset]
+          update_flags(registers[destination_register])
         else
           @running = false
         end
