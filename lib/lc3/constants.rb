@@ -27,6 +27,7 @@ module LC3
     JSR = 4
     AND = 5
     LDR = 6
+    NOT = 9
     LDI = 10
     JMP = 12
     LEA = 14

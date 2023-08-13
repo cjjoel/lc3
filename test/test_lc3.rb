@@ -166,4 +166,15 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3003, registers[R0]
     assert_equal LC3::POSISTIVE_FLAG, registers[COND]
   end
+
+  def test_should_perform_bitwise_not_on_register
+    # NOT R0, R0
+    bytecode = [0b1001000000111111, 0xFFFF]
+    vm = LC3::VM.new
+    vm.registers[R0] = 0x0002
+    vm.load_bytecode(bytecode).execute
+
+    assert_equal 0xFFFD, vm.registers[R0]
+    assert_equal LC3::NEGATIVE_FLAG, vm.registers[COND]
+  end
 end

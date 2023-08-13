@@ -68,6 +68,11 @@ module LC3
           pc_offset = sign_extend(instruction[0..8] & 0x1FF)
           registers[destination_register] = registers[PC] + pc_offset
           update_flags(registers[destination_register])
+        when NOT
+          destination_register = instruction[9..11]
+          source_register = instruction[6..8]
+          registers[destination_register] = registers[source_register] ^ 0xFFFF
+          update_flags(registers[destination_register])
         else
           @running = false
         end
