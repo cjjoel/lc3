@@ -139,7 +139,7 @@ class TestLC3 < Minitest::Test
   end
 
   def test_should_load_value_from_memory_with_offset
-    # LD RO 2
+    # LD RO, 2
     bytecode = [0x2002, 0xFFFF, 0xFFFF, 0xFFF9]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
 
@@ -149,12 +149,21 @@ class TestLC3 < Minitest::Test
 
   def test_should_load_value_from_memory_with_offset_and_register
     # LDR R0, R1, 1
-    bytecode = [0b0110000001000001, 0xFFFF, 0xFFFF, 0x0000]
+    bytecode = [0x6041, 0xFFFF, 0xFFFF, 0x0000]
     vm = LC3::VM.new
     vm.registers[R1] = 0x3002
     vm.load_bytecode(bytecode).execute
 
     assert_equal 0x0000, vm.registers[R0]
     assert_equal LC3::ZERO_FLAG, vm.registers[COND]
+  end
+
+  def test_should_load_address_into_register
+    # LEA R0, 2
+    bytecode = [0xE002, 0xFFFF, 0xFFFF, 0x1111]
+    registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
+
+    assert_equal 0x3003, registers[R0]
+    assert_equal LC3::POSISTIVE_FLAG, registers[COND]
   end
 end

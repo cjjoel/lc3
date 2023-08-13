@@ -29,5 +29,6 @@ module LC3
     LDR = 6
     LDI = 10
     JMP = 12
+    LEA = 14
   end
 end
