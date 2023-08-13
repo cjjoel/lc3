@@ -30,6 +30,7 @@ module LC3
     LDR = 6
     NOT = 9
     LDI = 10
+    STI = 11
     JMP = 12
     LEA = 14
   end

@@ -187,4 +187,14 @@ class TestLC3 < Minitest::Test
 
     assert_equal vm.registers[R0], vm.memory[0x3003]
   end
+
+  def test_should_indirectly_store_value_to_memory
+    # STI R0, 2
+    bytecode = [0xB001, 0xFFFF, 0x3004]
+    vm = LC3::VM.new
+    vm.registers[R0] = 0x1111
+    vm.load_bytecode(bytecode).execute
+
+    assert_equal 0x1111, vm.memory[0x3004]
+  end
 end
