@@ -32,14 +32,14 @@ module LC3
           process_arithmetic_operation(instruction, :+)
         when LDI
           destination_register = instruction[9..11]
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           registers[destination_register] = memory[memory[registers[PC] + pc_offset]]
           update_flags(registers[destination_register])
         when AND
           process_arithmetic_operation(instruction, :&)
         when BR
           condition = registers[COND].anybits?(instruction[9..11])
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           registers[PC] += pc_offset if condition
         when JMP
           address = registers[instruction[6..8]]
@@ -50,23 +50,23 @@ module LC3
             base_register = registers[instruction[6..8]]
             registers[PC] = base_register
           else
-            pc_offset = sign_extend(instruction[0..11] & 0x7FF)
+            pc_offset = sign_extend(instruction[0..10] & 0x7FF)
             registers[PC] += pc_offset
           end
         when LD
           destination_register = instruction[9..11]
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           registers[destination_register] = memory[registers[PC] + pc_offset]
           update_flags(registers[destination_register])
         when LDR
           destination_register = instruction[9..11]
           base_register = registers[instruction[6..8]]
-          pc_offset = sign_extend(instruction[0..5] & 0x11F)
+          pc_offset = sign_extend(instruction[0..5])
           registers[destination_register] = memory[base_register + pc_offset]
           update_flags(registers[destination_register])
         when LEA
           destination_register = instruction[9..11]
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           registers[destination_register] = registers[PC] + pc_offset
           update_flags(registers[destination_register])
         when NOT
@@ -76,16 +76,16 @@ module LC3
           update_flags(registers[destination_register])
         when ST
           source_register = instruction[9..11]
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           memory[registers[PC] + pc_offset] = registers[source_register]
         when STI
           source_register = instruction[9..11]
-          pc_offset = sign_extend(instruction[0..8] & 0x1FF)
+          pc_offset = sign_extend(instruction[0..8])
           memory[memory[registers[PC] + pc_offset]] = registers[source_register]
         when STR
           source_register = instruction[9..11]
           base_register = instruction[6..8]
-          pc_offset = sign_extend(instruction[0..5] & 0x11F)
+          pc_offset = sign_extend(instruction[0..5])
           memory[registers[base_register] + pc_offset] = registers[source_register]
         when TRAP
           registers[R7] = registers[PC]
