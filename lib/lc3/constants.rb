@@ -34,5 +34,10 @@ module LC3
     STI = 11
     JMP = 12
     LEA = 14
+    TRAP = 15
+  end
+
+  module TRAPCODES
+    HALT = 0x25
   end
 end

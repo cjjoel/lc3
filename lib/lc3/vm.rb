@@ -6,6 +6,7 @@ module LC3
   class VM
     include REGISTERS
     include OPCODES
+    include TRAPCODES
 
     attr_accessor :memory, :registers, :running
 
@@ -86,8 +87,15 @@ module LC3
           base_register = instruction[6..8]
           pc_offset = sign_extend(instruction[0..5] & 0x11F)
           memory[registers[base_register] + pc_offset] = registers[source_register]
+        when TRAP
+          registers[R7] = registers[PC]
+          trap_routine = instruction[0..7]
+          case trap_routine
+          when HALT
+            @running = false
+          end
         else
-          @running = false
+          puts "Unknown opcode #{opcode.to_s(16)}"
         end
       end
       self
