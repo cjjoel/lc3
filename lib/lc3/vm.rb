@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "io/console"
 require_relative "constants"
 
 module LC3
@@ -91,6 +92,9 @@ module LC3
           registers[R7] = registers[PC]
           trap_routine = instruction[0..7]
           case trap_routine
+          when GETC
+            character = $stdin.getch
+            registers[R0] = character
           when PUTS
             string = memory[registers[R0]..]
                      .take_while { |code| code != 0x000 }
