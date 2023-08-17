@@ -287,4 +287,18 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3002, vm.registers[PC]
     assert_equal 0x3002, vm.registers[R7]
   end
+
+  def test_should_print_single_character
+    # OUT
+    # HALT
+    bytecode = [0xF021, 0xF025]
+    vm = LC3::VM.new.load_bytecode(bytecode)
+    vm.registers[R0] = 0x0061
+
+    assert_output "a" do
+      vm.execute
+    end
+    assert_equal 0x3002, vm.registers[PC]
+    assert_equal 0x3002, vm.registers[R7]
+  end
 end

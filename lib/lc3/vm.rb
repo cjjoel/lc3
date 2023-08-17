@@ -95,6 +95,9 @@ module LC3
           when GETC
             character = $stdin.getch
             registers[R0] = character
+          when OUT
+            character = registers[R0]
+            $stdout.putc(character)
           when PUTS
             string = memory[registers[R0]..]
                      .take_while { |code| code != 0x000 }

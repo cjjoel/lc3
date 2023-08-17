@@ -39,6 +39,7 @@ module LC3
 
   module TRAPCODES
     GETC = 0x20
+    OUT = 0x21
     PUTS = 0x22
     HALT = 0x25
   end
