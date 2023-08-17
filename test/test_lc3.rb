@@ -259,4 +259,18 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3001, registers[PC]
     assert_equal 0x3001, registers[R7]
   end
+
+  def test_should_print_null_terminated_string
+    # PUTS
+    # HALT
+    bytecode = [0xF022, 0xF025, 0x0048, 0x0065, 0x006C, 0x006C, 0x006F, 0x000A, 0x0000]
+    vm = LC3::VM.new.load_bytecode(bytecode)
+    vm.registers[R0] = 0x3002
+
+    assert_output "Hello\n" do
+      vm.execute
+    end
+    assert_equal 0x3002, vm.registers[PC]
+    assert_equal 0x3002, vm.registers[R7]
+  end
 end

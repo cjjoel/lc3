@@ -38,6 +38,7 @@ module LC3
   end
 
   module TRAPCODES
+    PUTS = 0x22
     HALT = 0x25
   end
 end
