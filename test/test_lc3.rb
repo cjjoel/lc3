@@ -301,4 +301,25 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3002, vm.registers[PC]
     assert_equal 0x3002, vm.registers[R7]
   end
+
+  def test_should_prompt_read_and_echo_a_single_character
+    # TRAP 0x23
+    # HALT
+    bytecode = [0xF023, 0xF025]
+    vm = LC3::VM.new.load_bytecode(bytecode)
+    mock = MiniTest::Mock.new
+    mock.expect :call, nil, ["Enter a character: "]
+    vm.stub :print, mock do
+      assert_output "a" do
+        simulate_stdin("a") do
+            vm.execute
+        end
+      end
+    end
+
+    assert_equal "a", vm.registers[R0]
+    assert_equal 0x3002, vm.registers[PC]
+    assert_equal 0x3002, vm.registers[R7]
+    mock.verify
+  end
 end

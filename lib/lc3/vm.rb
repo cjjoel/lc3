@@ -103,6 +103,11 @@ module LC3
                      .take_while { |code| code != 0x000 }
                      .reduce("") { |acc, code| acc + code.chr }
             print string
+          when IN
+            print "Enter a character: "
+            character = $stdin.getch
+            $stdout.putc(character)
+            registers[R0] = character
           when HALT
             @running = false
           end
