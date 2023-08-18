@@ -27,7 +27,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_add_register_and_number
     # ADD R3, R0, 1
-    # HALT
+    # TRAP 0x25
     bytecode = [0x1621, 0xF025]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
 
@@ -36,7 +36,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_add_registers
     # ADD R3, R0, R1
-    # HALT
+    # TRAP 0x25
     bytecode = [0x1601, 0xF025]
     vm = LC3::VM.new
     vm.registers[R0] = vm.registers[R1] = 1
@@ -47,11 +47,11 @@ class TestLC3 < Minitest::Test
 
   def test_should_indirectly_load_value_to_register
     # LDI R0, 3
-    # HALT
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
+    # TRAP 0x25
     # 0x3006
-    # HALT
+    # TRAP 0x25
     # 0x1111
     bytecode = [0xA003, 0xF025, 0xF025, 0xF025, 0x3006, 0xF025, 0x1111]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -61,7 +61,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_perform_bitwise_and_on_register_and_number
     # AND R3, R0, 0x0F
-    # HALT
+    # TRAP 0x25
     bytecode = [0x562F, 0xF025]
     vm = LC3::VM.new
     vm.registers[R0] = 0xFFFF
@@ -72,7 +72,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_perform_bitwise_and_on_registers
     # AND R3, R0, R1
-    # HALT
+    # TRAP 0x25
     bytecode = [0x5601, 0xF025]
     vm = LC3::VM.new
     vm.registers[R0] = 0xFFFF
@@ -85,8 +85,8 @@ class TestLC3 < Minitest::Test
   def test_should_branch_on_negative_value
     # BRn 2
     # ADD R0, R0, 1
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0x0802, 0x1021, 0xF025, 0xF025]
     vm = LC3::VM.new
     vm.registers[COND] = 0b100
@@ -98,8 +98,8 @@ class TestLC3 < Minitest::Test
   def test_should_branch_on_zero_value
     # BRz 2
     # ADD R0, R0, 1
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0x0402, 0x1021, 0xF025, 0xF025]
     vm = LC3::VM.new
     vm.registers[COND] = 0b010
@@ -111,8 +111,8 @@ class TestLC3 < Minitest::Test
   def test_should_branch_on_positive_value
     # BRp 2
     # ADD R0, R0, 1
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0x0202, 0x1021, 0xF025, 0xF025]
     vm = LC3::VM.new
     vm.registers[COND] = 0b001
@@ -124,8 +124,8 @@ class TestLC3 < Minitest::Test
   def test_should_jump_to_address
     # JMP 7
     # ADD R0, R0, 1
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0xC1C0, 0x1021, 0xF025, 0xF025]
     vm = LC3::VM.new
     vm.registers[R7] = 0x3003
@@ -139,8 +139,8 @@ class TestLC3 < Minitest::Test
     # ADD R0, R0, 1
     # HALT
     # ST R7, 0
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0x4040, 0x1021, 0xF025, 0x3E00, 0xF025, 0xF025]
     vm = LC3::VM.new
     vm.registers[R1] = 0x3003
@@ -153,10 +153,10 @@ class TestLC3 < Minitest::Test
   def test_should_jump_to_subroutine_address_stored_in_memory
     # JSR 2
     # ADD R0, R0, 1
-    # HALT
+    # TRAP 0x25
     # ST R7, 0
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     bytecode = [0x4802, 0x1021, 0xF025, 0x3E00, 0xF025, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode).execute
 
@@ -166,8 +166,8 @@ class TestLC3 < Minitest::Test
 
   def test_should_load_value_from_memory_with_offset
     # LD RO, 2
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     # 0xFFF9
     bytecode = [0x2002, 0xF025, 0xF025, 0xFFF9]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -178,8 +178,8 @@ class TestLC3 < Minitest::Test
 
   def test_should_load_value_from_memory_with_offset_and_register
     # LDR R0, R1, 1
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     # 0x0000
     bytecode = [0x6041, 0xF025, 0xF025, 0x0000]
     vm = LC3::VM.new
@@ -192,8 +192,8 @@ class TestLC3 < Minitest::Test
 
   def test_should_load_address_into_register
     # LEA R0, 2
-    # HALT
-    # HALT
+    # TRAP 0x25
+    # TRAP 0x25
     # 0x1111
     bytecode = [0xE002, 0xF025, 0xF025, 0x1111]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -204,7 +204,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_perform_bitwise_not_on_register
     # NOT R0, R0
-    # HALT
+    # TRAP 0x25
     bytecode = [0x903F, 0xF025]
     vm = LC3::VM.new
     vm.registers[R0] = 0x0002
@@ -216,7 +216,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_store_value_to_memory
     # ST R0, 2
-    # HALT
+    # TRAP 0x25
     bytecode = [0x3002, 0xF025]
     vm = LC3::VM.new
     vm.registers[R0] = 0x1111
@@ -227,7 +227,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_indirectly_store_value_to_memory
     # STI R0, 2
-    # HALT
+    # TRAP 0x25
     # 0x3004
     bytecode = [0xB001, 0xF025, 0x3004]
     vm = LC3::VM.new
@@ -239,7 +239,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_load_source_register_to_memory_at_combined_value_of_base_register_and_offset
     # STR R4, R2, #1
-    # HALT
+    # TRAP 0x25
     bytecode = [0x7881, 0xF025]
     vm = LC3::VM.new
     vm.registers[R2] = 0x3001
@@ -250,7 +250,7 @@ class TestLC3 < Minitest::Test
   end
 
   def test_should_halt_the_virtual_machine
-    # HALT
+    # TRAP 0x25
     # ADD R0, R0, 1
     bytecode = [0xF025, 0x1021]
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
@@ -261,7 +261,7 @@ class TestLC3 < Minitest::Test
   end
 
   def test_should_print_null_terminated_string
-    # PUTS
+    # TRAP 0x22
     # HALT
     bytecode = [0xF022, 0xF025, 0x0048, 0x0065, 0x006C, 0x006C, 0x006F, 0x000A, 0x0000]
     vm = LC3::VM.new.load_bytecode(bytecode)
@@ -275,7 +275,7 @@ class TestLC3 < Minitest::Test
   end
 
   def test_should_read_single_character
-    # GETC
+    # TRAP 0x20
     # HALT
     bytecode = [0xF020, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode)
@@ -289,7 +289,7 @@ class TestLC3 < Minitest::Test
   end
 
   def test_should_print_single_character
-    # OUT
+    # TRAP 0x21
     # HALT
     bytecode = [0xF021, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode)
