@@ -276,7 +276,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_read_single_character
     # TRAP 0x20
-    # HALT
+    # TRAP 0x25
     bytecode = [0xF020, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode)
     simulate_stdin("a") do
@@ -290,7 +290,7 @@ class TestLC3 < Minitest::Test
 
   def test_should_print_single_character
     # TRAP 0x21
-    # HALT
+    # TRAP 0x25
     bytecode = [0xF021, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode)
     vm.registers[R0] = 0x0061
@@ -304,15 +304,16 @@ class TestLC3 < Minitest::Test
 
   def test_should_prompt_read_and_echo_a_single_character
     # TRAP 0x23
-    # HALT
+    # TRAP 0x25
     bytecode = [0xF023, 0xF025]
     vm = LC3::VM.new.load_bytecode(bytecode)
     mock = MiniTest::Mock.new
     mock.expect :call, nil, ["Enter a character: "]
+
     vm.stub :print, mock do
       assert_output "a" do
         simulate_stdin("a") do
-            vm.execute
+          vm.execute
         end
       end
     end
@@ -321,5 +322,19 @@ class TestLC3 < Minitest::Test
     assert_equal 0x3002, vm.registers[PC]
     assert_equal 0x3002, vm.registers[R7]
     mock.verify
+  end
+
+  def test_should_print_null_terminated_byte_string
+    # TRAP 0x24
+    # TRAP 0x25
+    bytecode = [0xF024, 0xF025, 0x6548, 0x6C6C, 0x006F, 0x000A, 0x0000]
+    vm = LC3::VM.new.load_bytecode(bytecode)
+    vm.registers[R0] = 0x3002
+
+    assert_output "Hello\n" do
+      vm.execute
+    end
+    assert_equal 0x3002, vm.registers[PC]
+    assert_equal 0x3002, vm.registers[R7]
   end
 end

@@ -108,6 +108,15 @@ module LC3
             character = $stdin.getch
             $stdout.putc(character)
             registers[R0] = character
+          when PUTSP
+            character_codes = memory[registers[R0]..].take_while { |code| code != 0 }
+            string = character_codes.reduce("") do |acc, code|
+              character1 = code[0..7].chr
+              character2 = code[8..15].chr
+              characters = character2 == "\x00" ? character1 : character1 + character2
+              acc + characters
+            end
+            print string
           when HALT
             @running = false
           end
