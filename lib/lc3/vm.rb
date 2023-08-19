@@ -17,10 +17,21 @@ module LC3
       @running = true
     end
 
-    def load_bytecode(bytecode)
-      memory.insert(DEFAULT_PC_ADDRESS, *bytecode)
-      registers[PC] = DEFAULT_PC_ADDRESS
+    def load_bytecode(bytecode, origin = DEFAULT_PC_ADDRESS)
+      memory.insert(origin, *bytecode)
+      registers[PC] = origin
       self
+    end
+
+    def load_image_file(path)
+      bytecode = []
+      File.open(path, "rb") do |file|
+        while (instruction = file.read(2))
+          bytecode.push(instruction.unpack1("H4").hex)
+        end
+      end
+      origin = bytecode.shift
+      load_bytecode(bytecode, origin)
     end
 
     def execute

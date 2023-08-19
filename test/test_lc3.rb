@@ -25,6 +25,16 @@ class TestLC3 < Minitest::Test
     assert_equal bytecode, memory[LC3::DEFAULT_PC_ADDRESS..]
   end
 
+  def test_should_load_image_file_into_memory
+    file = Tempfile.new(["program", ".obj"], binmode: true)
+    contents = [0x3000, 0x1621, 0xF025]
+    file.write(contents.pack("S>*"))
+    file.close
+    memory = LC3::VM.new.load_image_file(file.path).memory
+
+    assert_equal contents[1..], memory[LC3::DEFAULT_PC_ADDRESS..]
+  end
+
   def test_should_add_register_and_number
     # ADD R3, R0, 1
     # TRAP 0x25
