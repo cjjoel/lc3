@@ -293,7 +293,7 @@ class TestLC3 < Minitest::Test
       vm.execute
     end
 
-    assert_equal "a", vm.registers[R0]
+    assert_equal 97, vm.registers[R0]
     assert_equal 0x3002, vm.registers[PC]
     assert_equal 0x3002, vm.registers[R7]
   end
@@ -328,7 +328,7 @@ class TestLC3 < Minitest::Test
       end
     end
 
-    assert_equal "a", vm.registers[R0]
+    assert_equal 97, vm.registers[R0]
     assert_equal 0x3002, vm.registers[PC]
     assert_equal 0x3002, vm.registers[R7]
     mock.verify
