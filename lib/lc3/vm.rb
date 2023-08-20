@@ -41,7 +41,7 @@ module LC3
         registers[PC] += 1
         case opcode
         when ADD
-          process_arithmetic_operation(instruction, :+)
+          process_arithmetic_instruction(instruction, :+)
         when LDI
           destination_register = instruction[9..11]
           pc_offset = sign_extend(instruction[0..8], 8)
@@ -49,7 +49,7 @@ module LC3
           registers[destination_register] = memory[memory[address]]
           update_flags(registers[destination_register])
         when AND
-          process_arithmetic_operation(instruction, :&)
+          process_arithmetic_instruction(instruction, :&)
         when BR
           condition = registers[COND].anybits?(instruction[9..11])
           pc_offset = sign_extend(instruction[0..8], 8)
@@ -107,39 +107,7 @@ module LC3
           address = (registers[base_register] + pc_offset)[0..15]
           memory[address] = registers[source_register]
         when TRAP
-          registers[R7] = registers[PC]
-          trap_routine = instruction[0..7]
-          case trap_routine
-          when GETC
-            character = $stdin.getch
-            registers[R0] = character.sub(/\r/, "\n").ord
-            update_flags(registers[R0])
-          when OUT
-            character = registers[R0]
-            $stdout.putc(character)
-          when PUTS
-            string = memory[registers[R0]..]
-                     .take_while { |code| code != 0x000 }
-                     .reduce("") { |acc, code| acc + code.chr }
-            print string
-          when IN
-            print "Enter a character: "
-            character = $stdin.getch
-            $stdout.putc(character)
-            registers[R0] = character.ord
-            update_flags(registers[R0])
-          when PUTSP
-            character_codes = memory[registers[R0]..].take_while { |code| code != 0 }
-            string = character_codes.reduce("") do |acc, code|
-              character1 = code[0..7].chr
-              character2 = code[8..15].chr
-              characters = character2 == "\x00" ? character1 : character1 + character2
-              acc + characters
-            end
-            print string
-          when HALT
-            @running = false
-          end
+          process_trap_instruction(instruction)
         else
           puts "Unknown opcode #{opcode.to_s(16)}"
         end
@@ -149,7 +117,7 @@ module LC3
 
     private
 
-    def process_arithmetic_operation(instruction, operator)
+    def process_arithmetic_instruction(instruction, operator)
       destination_register = instruction[9..11]
       source_register1 = instruction[6..8]
       is_immediate_mode = instruction[5] == 1
@@ -162,6 +130,42 @@ module LC3
           registers[source_register1].method(operator).call(registers[source_register2])[0..15]
       end
       update_flags(registers[destination_register])
+    end
+
+    def process_trap_instruction(instruction)
+      registers[R7] = registers[PC]
+      trap_routine = instruction[0..7]
+      case trap_routine
+      when GETC
+        character = $stdin.getch
+        registers[R0] = character.sub("\r", "\n").ord
+        update_flags(registers[R0])
+      when OUT
+        character = registers[R0]
+        $stdout.putc(character)
+      when PUTS
+        string = memory[registers[R0]..]
+                 .take_while { |code| !code.zero? }
+                 .reduce("") { |acc, code| acc + code.chr }
+        print string
+      when IN
+        print "Enter a character: "
+        character = $stdin.getch
+        $stdout.putc(character)
+        registers[R0] = character.ord
+        update_flags(registers[R0])
+      when PUTSP
+        character_codes = memory[registers[R0]..].take_while { |code| !code.zero? }
+        string = character_codes.reduce("") do |acc, code|
+          character1 = code[0..7].chr
+          character2 = code[8..15].chr
+          characters = character2 == "\x00" ? character1 : character1 + character2
+          acc + characters
+        end
+        print string
+      when HALT
+        @running = false
+      end
     end
 
     def sign_extend(number, sign_bit = 4)
