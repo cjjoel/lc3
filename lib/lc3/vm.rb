@@ -112,7 +112,7 @@ module LC3
           case trap_routine
           when GETC
             character = $stdin.getch
-            registers[R0] = character.ord
+            registers[R0] = character.sub(/\r/, "\n").ord
             update_flags(registers[R0])
           when OUT
             character = registers[R0]
