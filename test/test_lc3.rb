@@ -3,7 +3,8 @@
 require "test_helper"
 
 class TestLC3 < Minitest::Test
-  include LC3::REGISTERS
+  include LC3::Constants
+  include REGISTERS
 
   def test_that_it_has_a_version_number
     refute_nil ::LC3::VERSION
@@ -13,7 +14,7 @@ class TestLC3 < Minitest::Test
     bytecode = [0x1621, 0xF025]
     registers = LC3::VM.new.load_bytecode(bytecode).registers
     expected_register_values = Array.new(10, 0)
-    expected_register_values[PC] = LC3::DEFAULT_PC_ADDRESS
+    expected_register_values[PC] = DEFAULT_PC_ADDRESS
 
     assert_equal expected_register_values, registers
   end
@@ -22,7 +23,7 @@ class TestLC3 < Minitest::Test
     bytecode = [0x1621, 0xF025]
     memory = LC3::VM.new.load_bytecode(bytecode).memory
 
-    assert_equal bytecode, memory[LC3::DEFAULT_PC_ADDRESS..]
+    assert_equal bytecode, memory[DEFAULT_PC_ADDRESS..]
   end
 
   def test_should_load_image_file_into_memory
@@ -32,7 +33,7 @@ class TestLC3 < Minitest::Test
     file.close
     memory = LC3::VM.new.load_image_file(file.path).memory
 
-    assert_equal contents[1..], memory[LC3::DEFAULT_PC_ADDRESS..]
+    assert_equal contents[1..], memory[DEFAULT_PC_ADDRESS..]
   end
 
   def test_should_add_register_and_number
@@ -183,7 +184,7 @@ class TestLC3 < Minitest::Test
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
 
     assert_equal 0xFFF9, registers[R0]
-    assert_equal LC3::NEGATIVE_FLAG, registers[COND]
+    assert_equal NEGATIVE_FLAG, registers[COND]
   end
 
   def test_should_load_value_from_memory_with_offset_and_register
@@ -197,7 +198,7 @@ class TestLC3 < Minitest::Test
     vm.load_bytecode(bytecode).execute
 
     assert_equal 0x0000, vm.registers[R0]
-    assert_equal LC3::ZERO_FLAG, vm.registers[COND]
+    assert_equal ZERO_FLAG, vm.registers[COND]
   end
 
   def test_should_load_address_into_register
@@ -209,7 +210,7 @@ class TestLC3 < Minitest::Test
     registers = LC3::VM.new.load_bytecode(bytecode).execute.registers
 
     assert_equal 0x3003, registers[R0]
-    assert_equal LC3::POSISTIVE_FLAG, registers[COND]
+    assert_equal POSISTIVE_FLAG, registers[COND]
   end
 
   def test_should_perform_bitwise_not_on_register
@@ -221,7 +222,7 @@ class TestLC3 < Minitest::Test
     vm.load_bytecode(bytecode).execute
 
     assert_equal 0xFFFD, vm.registers[R0]
-    assert_equal LC3::NEGATIVE_FLAG, vm.registers[COND]
+    assert_equal NEGATIVE_FLAG, vm.registers[COND]
   end
 
   def test_should_store_value_to_memory
