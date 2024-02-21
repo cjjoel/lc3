@@ -9,7 +9,7 @@ module LC3
     include Constants::OPCODES
     include Constants::TRAPCODES
 
-    @@jump_table = []
+    JUMP_TABLE = {}
 
     attr_accessor :memory, :registers, :running
 
@@ -41,7 +41,7 @@ module LC3
         instruction = memory[registers[PC]]
         opcode = instruction[12..15]
         registers[PC] += 1
-        if (opcode_method = @@jump_table[opcode])
+        if (opcode_method = JUMP_TABLE[opcode])
           instance_exec(instruction, &opcode_method)
         else
           puts "Unknown opcode #{opcode.to_s(16)}"

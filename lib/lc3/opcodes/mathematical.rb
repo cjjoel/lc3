@@ -2,15 +2,15 @@
 
 module LC3
   class VM
-    @@jump_table[ADD] = proc do |instruction|
+    JUMP_TABLE[ADD] = proc do |instruction|
       process_arithmetic_instruction(instruction, :+)
     end
 
-    @@jump_table[AND] = proc do |instruction|
+    JUMP_TABLE[AND] = proc do |instruction|
       process_arithmetic_instruction(instruction, :&)
     end
 
-    @@jump_table[NOT] = proc do |instruction|
+    JUMP_TABLE[NOT] = proc do |instruction|
       destination_register = instruction[9..11]
       source_register = instruction[6..8]
       registers[destination_register] = registers[source_register] ^ 0xFFFF

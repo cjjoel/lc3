@@ -2,7 +2,7 @@
 
 module LC3
   class VM
-    @@jump_table[LDI] = proc do |instruction|
+    JUMP_TABLE[LDI] = proc do |instruction|
       destination_register = instruction[9..11]
       pc_offset = sign_extend(instruction[0..8], 8)
       address = (registers[PC] + pc_offset)[0..15]
@@ -10,7 +10,7 @@ module LC3
       registers[COND] = extract_sign(registers[destination_register])
     end
 
-    @@jump_table[LD] = proc do |instruction|
+    JUMP_TABLE[LD] = proc do |instruction|
       destination_register = instruction[9..11]
       pc_offset = sign_extend(instruction[0..8], 8)
       address = (registers[PC] + pc_offset)[0..15]
@@ -18,7 +18,7 @@ module LC3
       registers[COND] = extract_sign(registers[destination_register])
     end
 
-    @@jump_table[LDR] = proc do |instruction|
+    JUMP_TABLE[LDR] = proc do |instruction|
       destination_register = instruction[9..11]
       base_register = registers[instruction[6..8]]
       pc_offset = sign_extend(instruction[0..5], 5)
@@ -27,7 +27,7 @@ module LC3
       registers[COND] = extract_sign(registers[destination_register])
     end
 
-    @@jump_table[LEA] = proc do |instruction|
+    JUMP_TABLE[LEA] = proc do |instruction|
       destination_register = instruction[9..11]
       pc_offset = sign_extend(instruction[0..8], 8)
       registers[destination_register] = (registers[PC] + pc_offset)[0..15]

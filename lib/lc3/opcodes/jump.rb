@@ -2,19 +2,19 @@
 
 module LC3
   class VM
-    @@jump_table[BR] = proc do |instruction|
+    JUMP_TABLE[BR] = proc do |instruction|
       condition = registers[COND].anybits?(instruction[9..11])
       pc_offset = sign_extend(instruction[0..8], 8)
       address = (registers[PC] + pc_offset)[0..15]
       registers[PC] = address if condition
     end
 
-    @@jump_table[JMP] = proc do |instruction|
+    JUMP_TABLE[JMP] = proc do |instruction|
       address = registers[instruction[6..8]]
       registers[PC] = address
     end
 
-    @@jump_table[JSR] = proc do |instruction|
+    JUMP_TABLE[JSR] = proc do |instruction|
       registers[R7] = registers[PC]
       if (instruction[11]).zero?
         base_register = registers[instruction[6..8]]

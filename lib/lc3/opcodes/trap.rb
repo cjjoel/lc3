@@ -2,7 +2,7 @@
 
 module LC3
   class VM
-    @@jump_table[TRAP] = proc do |instruction|
+    JUMP_TABLE[TRAP] = proc do |instruction|
       registers[R7] = registers[PC]
       trap_routine = instruction[0..7]
       case trap_routine
